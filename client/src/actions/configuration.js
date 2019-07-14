@@ -1,3 +1,5 @@
+import _get from 'lodash.get';
+
 import internalAPI from '../utils/internalAPI';
 
 export const configurationTypes = {
@@ -7,14 +9,14 @@ export const configurationTypes = {
 };
 
 const getAllConfigurations = () => async (dispatch, getState) => {
-  const state = getState().configuration;
+  const state = _get(getState(), 'configuration', {});
   if (state.resolved && !state.error) {
     return;
-  } else {
-    dispatch({
-      type: configurationTypes.GET_CONFIGURATIONS_ATTEMPT,
-    });
   }
+
+  dispatch({
+    type: configurationTypes.GET_CONFIGURATIONS_ATTEMPT,
+  });
 
   const apiConfigPromise = internalAPI.get('/configuration/');
   const countriesConfigPromise = internalAPI.get('/configuration/countries');

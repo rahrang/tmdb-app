@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _get from 'lodash.get';
 
-import { fetchPopularMovies } from '../actions/movie';
+import { fetchPopularMovies } from '../../actions/movie';
+import MovieRow from '../Movie/MovieRow';
+import moviePreviewShape from '../Movie/proptypes';
 
-class Home extends React.Component {
+class PopularMovies extends React.Component {
   state = {
     page: 1,
   };
@@ -32,17 +35,34 @@ class Home extends React.Component {
   getMoviesObj = () => {
     const { popularMovies, language } = this.props;
     const { page } = this.state;
-    const movies = (popularMovies[language] || {})[page] || {};
-    return movies;
+    return _get(popularMovies, `${language}.${page}`, {});
   };
 
-  renderMovies = movies => {
+  renderMovieRows = movies => {
     const { results } = movies;
 
     return (
-      <div>
-        <pre>{JSON.stringify(results, null, 2)}</pre>
-      </div>
+      <table>
+        <tbody>
+          {results.map(r => (
+            <MovieRow key={r.id} result={r} id={r.id} />
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
+  renderMovieCards = movies => {
+    const { results } = movies;
+
+    return (
+      <table>
+        <tbody>
+          {results.map(r => (
+            <MovieRow key={r.id} result={r} id={r.id} />
+          ))}
+        </tbody>
+      </table>
     );
   };
 
@@ -57,11 +77,18 @@ class Home extends React.Component {
       return <div>Failed.</div>;
     }
 
-    return this.renderMovies(movies.data);
+    const { view } = this.props;
+
+    if (view === 'table') {
+      return this.renderMovieRows(movies.data);
+    }
+
+    return this.renderMovieCards(movies.data);
   }
 }
 
 const mapStateToProps = state => ({
+  configuration: state.configuration,
   language: state.session.language,
   popularMovies: state.movie.popular,
 });
@@ -73,9 +100,9 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Home);
+)(PopularMovies);
 
-Home.propTypes = {
+PopularMovies.propTypes = {
   language: PropTypes.string.isRequired,
   getPopularMovies: PropTypes.func.isRequired,
   popularMovies: PropTypes.objectOf(
@@ -85,28 +112,12 @@ Home.propTypes = {
           page: PropTypes.number,
           total_results: PropTypes.number,
           total_pages: PropTypes.number,
-          results: PropTypes.arrayOf(
-            PropTypes.exact({
-              vote_count: PropTypes.number,
-              id: PropTypes.number,
-              video: PropTypes.bool,
-              vote_average: PropTypes.number,
-              title: PropTypes.string,
-              popularity: PropTypes.number,
-              poster_path: PropTypes.string,
-              original_language: PropTypes.string,
-              original_title: PropTypes.string,
-              genre_ids: PropTypes.arrayOf(PropTypes.number),
-              backdrop_path: PropTypes.string,
-              adult: PropTypes.bool,
-              overview: PropTypes.string,
-              release_date: PropTypes.string,
-            }),
-          ),
+          results: PropTypes.arrayOf(moviePreviewShape),
         }),
         resolved: PropTypes.bool,
         error: PropTypes.string,
       }),
     ),
   ),
+  view: PropTypes.oneOf(['table', 'grid']).isRequired,
 };
