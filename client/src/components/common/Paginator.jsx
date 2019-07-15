@@ -8,13 +8,14 @@ const ChangePageButton = styled.button`
   margin: 0.5rem;
 
   opacity: ${props => (props.disabled ? 0.5 : 1)};
-  cursor: pointer;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
 
   border: ${props => props.theme.borderWidth} solid ${props => props.theme.colors.text};
   border-radius: ${props => props.theme.borderRadius};
 
   &:hover {
-    border: ${props => props.theme.borderWidth} solid ${props => props.theme.colors.accent};
+    border: ${props => props.theme.borderWidth} solid
+      ${props => (props.disabled ? props.theme.colors.text : props.theme.colors.accent)};
   }
 
   display: flex;

@@ -10,6 +10,7 @@ import moviePreviewShape from '../Movie/proptypes';
 import { PageLoader } from '../common/Loader';
 import Paginator from '../common/Paginator';
 import movieTypes from './movieTypes';
+import MovieType from './MovieType';
 
 class MoviesByType extends React.Component {
   state = {
@@ -24,9 +25,9 @@ class MoviesByType extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { language: prevLanguage } = prevProps;
     const { language } = this.props;
-    const { page: prevPage } = prevState;
-    const { page } = this.state;
-    if (page !== prevPage || language !== prevLanguage) {
+    const { page: prevPage, type: prevType } = prevState;
+    const { page, type } = this.state;
+    if (page !== prevPage || language !== prevLanguage || type !== prevType) {
       this.getMovies();
     }
   }
@@ -34,7 +35,7 @@ class MoviesByType extends React.Component {
   onChangeMovieType = newType => {
     const { type } = this.state;
     if (newType !== type) {
-      this.setState({ type: newType });
+      this.setState({ type: newType, page: 1 });
     }
   };
 
@@ -57,11 +58,25 @@ class MoviesByType extends React.Component {
     return _get(moviesByType, `${type}.${language}.${page}`, {});
   };
 
+  renderMovieTypes = () => {
+    const { type: activeType } = this.state;
+    return (
+      <div className="m-t-1">
+        {movieTypes.map(({ type, display }) => (
+          <MovieType key={type} type="button" onClick={() => this.onChangeMovieType(type)} active={type === activeType}>
+            {display}
+          </MovieType>
+        ))}
+      </div>
+    );
+  };
+
   renderMovieRows = movies => {
     const {
       configuration: { genres: genreMap },
     } = this.props;
-    const { results, total_results } = movies;
+    const { page } = this.state;
+    const { results, total_results, total_pages } = movies;
 
     return (
       <div className="m-t-1">
@@ -72,27 +87,27 @@ class MoviesByType extends React.Component {
             return <MovieRow key={r.id} result={r} id={r.id} genres={genres} />;
           })}
         </div>
+        <Paginator changePage={this.onChangePage} currentPage={page} lastPage={total_pages} />
       </div>
     );
   };
 
   render() {
-    const movies = this.getMoviesObj();
-
-    if (!movies.resolved) {
-      return <PageLoader />;
-    }
-
-    if (movies.error) {
-      return <div>Failed.</div>;
-    }
-
-    const { page } = this.state;
-
     return (
       <div>
-        {this.renderMovieRows(movies.data)}
-        <Paginator changePage={this.onChangePage} currentPage={page} lastPage={movies.data.total_pages} />
+        {this.renderMovieTypes()}
+        {(() => {
+          const movies = this.getMoviesObj();
+          if (!movies.resolved) {
+            return <PageLoader />;
+          }
+
+          if (movies.error) {
+            return <div>Failed.</div>;
+          }
+
+          return this.renderMovieRows(movies.data);
+        })()}
       </div>
     );
   }

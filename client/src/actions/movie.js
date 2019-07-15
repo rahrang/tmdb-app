@@ -13,7 +13,7 @@ export const movieTypes = {
 };
 
 export const fetchMoviesByType = ({ movieType, page = 1, language }) => async (dispatch, getState) => {
-  const state = _get(getState(), `movie.popular.${language}.${page}`, {});
+  const state = _get(getState(), `movie.moviesByType.${movieType}.${language}.${page}`, {});
   if (state.resolved && !state.error) {
     return;
   }
@@ -66,7 +66,7 @@ export const fetchMovieByID = ({ movieID, language }) => async (dispatch, getSta
 
   const res = await internalAPI.get(`/movie/${movieID}`, {
     params: {
-      append_to_response: 'videos,images,credits,external_ids,recommendations,similar,reviews',
+      append_to_response: 'credits,external_ids',
     },
   });
 

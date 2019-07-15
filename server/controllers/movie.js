@@ -1,6 +1,6 @@
 const tmdbClient = require('../tmdbClient');
 
-const validMovieTypes = ['popular', 'latest', 'now_playing', 'top_rated', 'upcoming'];
+const validMovieTypes = ['popular', 'now_playing', 'top_rated', 'upcoming'];
 
 exports.validateMovieType = (req, res, next) => {
   if (validMovieTypes.some(movieType => movieType === req.params.type)) {

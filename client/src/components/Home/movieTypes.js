@@ -4,19 +4,15 @@ export default [
     display: 'Popular',
   },
   {
-    type: 'latest',
-    display: 'Popular',
-  },
-  {
     type: 'now_playing',
-    display: 'Popular',
+    display: 'Now Playing',
   },
   {
     type: 'top_rated',
-    display: 'Popular',
+    display: 'Top Rated',
   },
   {
     type: 'upcoming',
-    display: 'Popular',
+    display: 'Upcoming',
   },
 ];

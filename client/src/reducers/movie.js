@@ -3,7 +3,7 @@ import _get from 'lodash.get';
 import { movieTypes } from '../actions/movie';
 
 const initialState = {
-  moviesByType: {}, // [language] => [page] => { data, resolved, error }
+  moviesByType: {}, // [type] => [language] => [page] => { data, resolved, error }
   movie: {},
 };
 
