@@ -1,50 +1,64 @@
+import _get from 'lodash.get';
+
 import { movieTypes } from '../actions/movie';
 
 const initialState = {
-  popular: {}, // [language] => [page] => { data, resolved, error }
+  moviesByType: {}, // [language] => [page] => { data, resolved, error }
   movie: {},
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case movieTypes.GET_MOST_POPULAR_MOVIES_ATTEMPT:
+    case movieTypes.GET_MOVIES_BY_TYPE_ATTEMPT:
       return {
         ...state,
-        popular: {
-          ...state.popular,
-          [action.language]: {
-            [action.page]: {
-              data: {},
-              resolved: false,
-              error: null,
+        moviesByType: {
+          ...state.moviesByType,
+          [action.movieType]: {
+            ..._get(state, `moviesByType.${action.movieType}`, {}),
+            [action.language]: {
+              ..._get(state, `moviesByType.${action.movieType}.${action.language}`, {}),
+              [action.page]: {
+                data: {},
+                resolved: false,
+                error: null,
+              },
             },
           },
         },
       };
-    case movieTypes.GET_MOST_POPULAR_MOVIES_SUCCESS:
+    case movieTypes.GET_MOVIES_BY_TYPE_SUCCESS:
       return {
         ...state,
-        popular: {
-          ...state.popular,
-          [action.language]: {
-            [action.page]: {
-              data: action.data,
-              resolved: true,
-              error: null,
+        moviesByType: {
+          ...state.moviesByType,
+          [action.movieType]: {
+            ..._get(state, `moviesByType.${action.movieType}`, {}),
+            [action.language]: {
+              ..._get(state, `moviesByType.${action.movieType}.${action.language}`, {}),
+              [action.page]: {
+                data: action.data,
+                resolved: true,
+                error: null,
+              },
             },
           },
         },
       };
-    case movieTypes.GET_MOST_POPULAR_MOVIES_FAILURE:
+    case movieTypes.GET_MOVIES_BY_TYPE_FAILURE:
       return {
         ...state,
-        popular: {
-          ...state.popular,
-          [action.language]: {
-            [action.page]: {
-              data: {},
-              resolved: true,
-              error: action.error,
+        moviesByType: {
+          ...state.moviesByType,
+          [action.movieType]: {
+            ..._get(state, `moviesByType.${action.movieType}`, {}),
+            [action.language]: {
+              ..._get(state, `moviesByType.${action.movieType}.${action.language}`, {}),
+              [action.page]: {
+                data: {},
+                resolved: true,
+                error: action.error,
+              },
             },
           },
         },

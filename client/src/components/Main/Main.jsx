@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import getAllConfiguration from '../../actions/configuration';
+import { PageLoader } from '../common/Loader';
 
 class Main extends React.Component {
   componentDidMount() {
@@ -12,7 +13,7 @@ class Main extends React.Component {
   render() {
     const { configuration } = this.props;
     if (!configuration.resolved) {
-      return <div>Loading...</div>;
+      return <PageLoader />;
     }
 
     if (configuration.error) {

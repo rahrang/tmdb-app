@@ -1,4 +1,5 @@
 import _get from 'lodash.get';
+import _indexBy from 'lodash.indexby';
 
 import internalAPI from '../utils/internalAPI';
 
@@ -22,15 +23,17 @@ const getAllConfigurations = () => async (dispatch, getState) => {
   const countriesConfigPromise = internalAPI.get('/configuration/countries');
   const languagesConfigPromise = internalAPI.get('/configuration/languages');
   const translationsConfigPromise = internalAPI.get('/configuration/primary_translations');
+  const movieGenresPromise = internalAPI.get('/movie/genres');
 
-  const [apiConfig, countriesConfig, languagesConfig, translationsConfig] = await Promise.all([
+  const [apiConfig, countriesConfig, languagesConfig, translationsConfig, movieGenres] = await Promise.all([
     apiConfigPromise,
     countriesConfigPromise,
     languagesConfigPromise,
     translationsConfigPromise,
+    movieGenresPromise,
   ]);
 
-  const didRequestFail = [apiConfig, countriesConfig, languagesConfig, translationsConfig].some(
+  const didRequestFail = [apiConfig, countriesConfig, languagesConfig, translationsConfig, movieGenres].some(
     res => res.status !== 200,
   );
   if (didRequestFail) {
@@ -46,6 +49,7 @@ const getAllConfigurations = () => async (dispatch, getState) => {
       countries: countriesConfig.data,
       languages: languagesConfig.data,
       translations: translationsConfig.data,
+      genres: _indexBy(movieGenres.data.genres, 'id'),
     },
   });
 };

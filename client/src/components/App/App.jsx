@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GlobalStyles from './GlobalStyles';
+import GlobalStyles from './GlobalStyles/GlobalStyles';
 import ThemeProvider from './Theme/Provider';
 import ReduxProvider from './ReduxProvider';
 

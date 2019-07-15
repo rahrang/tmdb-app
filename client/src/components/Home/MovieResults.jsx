@@ -2,10 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _get from 'lodash.get';
+import _debounce from 'lodash.debounce';
+import numbro from 'numbro';
 
 import { searchMovies } from '../../actions/search';
 import moviePreviewShape from '../Movie/proptypes';
 import MovieRow from '../Movie/MovieRow';
+import { PageLoader } from '../common/Loader';
+import Paginator from '../common/Paginator';
 
 class MovieResults extends React.Component {
   state = {
@@ -28,9 +32,16 @@ class MovieResults extends React.Component {
     }
   }
 
-  search = opts => {
+  search = _debounce(opts => {
     const { search } = this.props;
     search(opts);
+  }, 500);
+
+  onChangePage = newPage => {
+    const { page } = this.state;
+    if (newPage !== page) {
+      this.setState({ page: newPage });
+    }
   };
 
   getSearchResults = () => {
@@ -40,9 +51,13 @@ class MovieResults extends React.Component {
   };
 
   renderMovieRows = movieResults => {
-    const { results } = movieResults;
+    const {
+      configuration: { genres: genreMap },
+    } = this.props;
+    const { page } = this.state;
+    const { results, total_results, total_pages } = movieResults;
 
-    if (results.length === 0) {
+    if (total_results === 0) {
       return (
         <div>
           <h3>No results for this query</h3>
@@ -51,13 +66,16 @@ class MovieResults extends React.Component {
     }
 
     return (
-      <table>
-        <tbody>
-          {results.map(r => (
-            <MovieRow key={r.id} result={r} id={r.id} />
-          ))}
-        </tbody>
-      </table>
+      <div className="m-t-1">
+        <div className="text-right">{`${numbro(total_results).format({ thousandSeparated: true })} Results Total`}</div>
+        <div className="flex-row flex-wrap content-center m-b-1">
+          {results.map(r => {
+            const genres = r.genre_ids.map(id => genreMap[id]);
+            return <MovieRow key={r.id} result={r} id={r.id} genres={genres} />;
+          })}
+        </div>
+        <Paginator changePage={this.onChangePage} currentPage={page} lastPage={total_pages} />
+      </div>
     );
   };
 
@@ -65,24 +83,19 @@ class MovieResults extends React.Component {
     const searchResults = this.getSearchResults();
 
     if (!searchResults.resolved) {
-      return <div>Loading...</div>;
+      return <PageLoader />;
     }
 
     if (searchResults.error) {
       return <div>Failed.</div>;
     }
 
-    const { view } = this.props;
-
-    if (view === 'table') {
-      return this.renderMovieRows(searchResults.data);
-    }
-
-    return this.renderMovieCards(searchResults.data);
+    return <div>{this.renderMovieRows(searchResults.data)}</div>;
   }
 }
 
 const mapStateToProps = (state, props) => ({
+  configuration: state.configuration.data,
   language: state.session.language,
   searchResults: state.search.movies[props.query] || {},
 });
@@ -113,5 +126,4 @@ MovieResults.propTypes = {
       }),
     ),
   ),
-  view: PropTypes.oneOf(['table', 'grid']).isRequired,
 };

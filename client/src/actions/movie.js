@@ -1,45 +1,51 @@
 import _get from 'lodash.get';
+import wait from 'waait';
 
 import internalAPI from '../utils/internalAPI';
 
 export const movieTypes = {
-  GET_MOST_POPULAR_MOVIES_ATTEMPT: 'GET_MOST_POPULAR_MOVIES_ATTEMPT',
-  GET_MOST_POPULAR_MOVIES_SUCCESS: 'GET_MOST_POPULAR_MOVIES_SUCCESS',
-  GET_MOST_POPULAR_MOVIES_FAILURE: 'GET_MOST_POPULAR_MOVIES_FAILURE',
+  GET_MOVIES_BY_TYPE_ATTEMPT: 'GET_MOVIES_BY_TYPE_ATTEMPT',
+  GET_MOVIES_BY_TYPE_SUCCESS: 'GET_MOVIES_BY_TYPE_SUCCESS',
+  GET_MOVIES_BY_TYPE_FAILURE: 'GET_MOVIES_BY_TYPE_FAILURE',
   GET_MOVIE_ATTEMPT: 'GET_MOVIE_ATTEMPT',
   GET_MOVIE_SUCCESS: 'GET_MOVIE_SUCCESS',
   GET_MOVIE_FAILURE: 'GET_MOVIE_FAILURE',
 };
 
-export const fetchPopularMovies = ({ page = 1, language }) => async (dispatch, getState) => {
+export const fetchMoviesByType = ({ movieType, page = 1, language }) => async (dispatch, getState) => {
   const state = _get(getState(), `movie.popular.${language}.${page}`, {});
   if (state.resolved && !state.error) {
     return;
   }
 
   dispatch({
-    type: movieTypes.GET_MOST_POPULAR_MOVIES_ATTEMPT,
+    type: movieTypes.GET_MOVIES_BY_TYPE_ATTEMPT,
+    movieType,
     language,
     page,
   });
 
-  const res = await internalAPI.get('/movie/popular', {
+  const res = await internalAPI.get(`/movie/type/${movieType}`, {
     params: {
       language,
       page,
     },
   });
 
+  await wait(1500);
+
   if (res.status === 200) {
     dispatch({
-      type: movieTypes.GET_MOST_POPULAR_MOVIES_SUCCESS,
+      type: movieTypes.GET_MOVIES_BY_TYPE_SUCCESS,
       data: res.data,
+      movieType,
       language,
       page,
     });
   } else {
     dispatch({
-      type: movieTypes.GET_MOST_POPULAR_MOVIES_FAILURE,
+      type: movieTypes.GET_MOVIES_BY_TYPE_FAILURE,
+      movieType,
       language,
       page,
     });
@@ -60,9 +66,11 @@ export const fetchMovieByID = ({ movieID, language }) => async (dispatch, getSta
 
   const res = await internalAPI.get(`/movie/${movieID}`, {
     params: {
-      append_to_response: 'videos',
+      append_to_response: 'videos,images,credits,external_ids,recommendations,similar,reviews',
     },
   });
+
+  await wait(1500);
 
   if (res.status === 200) {
     dispatch({

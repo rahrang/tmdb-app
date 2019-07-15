@@ -1,4 +1,5 @@
 import _get from 'lodash.get';
+import wait from 'waait';
 
 import internalAPI from '../utils/internalAPI';
 
@@ -28,6 +29,8 @@ export const searchMovies = ({ query, page, language }) => async (dispatch, getS
       language,
     },
   });
+
+  await wait(1500);
 
   if (res.status === 200) {
     dispatch({

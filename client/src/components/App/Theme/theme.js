@@ -5,11 +5,10 @@ const theme = {
     background: '#fff',
     surface: '#fff',
     accent: '#f5af22',
+    lightAccent: '#fff9f2',
     header: '#20160a',
     text: '#46586b',
   },
 };
-
-export const setTheme = () => {};
 
 export default theme;
