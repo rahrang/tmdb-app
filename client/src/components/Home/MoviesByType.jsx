@@ -5,7 +5,7 @@ import _get from 'lodash.get';
 import numbro from 'numbro';
 
 import { fetchMoviesByType } from '../../actions/movie';
-import MovieRow from '../Movie/MovieRow';
+import MovieCard from '../Movie/MovieCard';
 import moviePreviewShape from '../Movie/proptypes';
 import { PageLoader } from '../common/Loader';
 import Paginator from '../common/Paginator';
@@ -71,7 +71,7 @@ class MoviesByType extends React.Component {
     );
   };
 
-  renderMovieRows = movies => {
+  renderMovieCards = movies => {
     const {
       configuration: { genres: genreMap },
     } = this.props;
@@ -84,7 +84,7 @@ class MoviesByType extends React.Component {
         <div className="flex-row flex-wrap content-center m-b-1">
           {results.map(r => {
             const genres = r.genre_ids.map(id => genreMap[id]);
-            return <MovieRow key={r.id} result={r} id={r.id} genres={genres} />;
+            return <MovieCard key={r.id} result={r} id={r.id} genres={genres} />;
           })}
         </div>
         <Paginator changePage={this.onChangePage} currentPage={page} lastPage={total_pages} />
@@ -106,7 +106,7 @@ class MoviesByType extends React.Component {
             return <div>Failed.</div>;
           }
 
-          return this.renderMovieRows(movies.data);
+          return this.renderMovieCards(movies.data);
         })()}
       </div>
     );

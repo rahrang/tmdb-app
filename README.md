@@ -30,9 +30,10 @@ yarn -v # Confirm yarn is installed (not required)
 ```
 
 This project was developed with the following versions:
-node: 10.15.3
-npm: 6.4.1
-yarn: 1.16.0
+
+- node: 10.15.3
+- npm: 6.4.1
+- yarn: 1.16.0
 
 Once you have Node and npm installed, run the following commands:
 
@@ -45,13 +46,13 @@ yarn install # or `npm install`
 
 To run locally, assuming you are in the `tmdb-app` directory:
 
-In one terminal window, run the server:
+In one terminal window, run the server.
 
 ```bash
   yarn start
 ```
 
-In another terminal window, run the client:
+In another terminal window, run the client.
 
 ```bash
   cd client
@@ -61,3 +62,10 @@ In another terminal window, run the client:
 ## Future Features
 
 With more time to work on this project, I would flesh out the following features:
+
+- better styles overall, especially on the MovieCard component when the pages loads
+- usage of the URL query parameters when searching for movies, paginating, or selecting filters
+- filtration by genre, year
+- incorporation of image and video assets on the single movie page
+- better-structured (flattened) reducers, especially the movie and search reducers, where data is nested 3 or 4 layers deep
+-

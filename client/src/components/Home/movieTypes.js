@@ -1,7 +1,7 @@
 export default [
   {
     type: 'popular',
-    display: 'Popular',
+    display: 'Most Popular',
   },
   {
     type: 'now_playing',

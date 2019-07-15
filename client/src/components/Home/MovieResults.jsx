@@ -7,7 +7,7 @@ import numbro from 'numbro';
 
 import { searchMovies } from '../../actions/search';
 import moviePreviewShape from '../Movie/proptypes';
-import MovieRow from '../Movie/MovieRow';
+import MovieCard from '../Movie/MovieCard';
 import { PageLoader } from '../common/Loader';
 import Paginator from '../common/Paginator';
 
@@ -50,7 +50,7 @@ class MovieResults extends React.Component {
     return _get(searchResults, `${language}.${page}`, {});
   };
 
-  renderMovieRows = movieResults => {
+  renderMovieCards = movieResults => {
     const {
       configuration: { genres: genreMap },
     } = this.props;
@@ -71,7 +71,7 @@ class MovieResults extends React.Component {
         <div className="flex-row flex-wrap content-center m-b-1">
           {results.map(r => {
             const genres = r.genre_ids.map(id => genreMap[id]);
-            return <MovieRow key={r.id} result={r} id={r.id} genres={genres} />;
+            return <MovieCard key={r.id} result={r} id={r.id} genres={genres} />;
           })}
         </div>
         <Paginator changePage={this.onChangePage} currentPage={page} lastPage={total_pages} />
@@ -90,7 +90,7 @@ class MovieResults extends React.Component {
       return <div>Failed.</div>;
     }
 
-    return <div>{this.renderMovieRows(searchResults.data)}</div>;
+    return <div>{this.renderMovieCards(searchResults.data)}</div>;
   }
 }
 
