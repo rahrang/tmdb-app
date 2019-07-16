@@ -25,7 +25,7 @@ NODE_ENV="development"
 TMDB_API_KEY={YOUR_TMDB_API_KEY}
 ```
 
-(If I have sent you this project, you should have received the API Key in the email.)
+(If I emailed you this project, you should have received the API Key in the email.)
 
 Then, ensure node, npm, and yarn (optional) are installed.
 
