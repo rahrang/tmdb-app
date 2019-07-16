@@ -17,11 +17,17 @@ git clone https://github.com/rahrang/tmdb-app.git
 
 This will create a directory `tmdb-app` in your directory.
 
-If you do not yet have Node and npm (node package manager) installed, follow the directions below.
+In the `tmdb-app` directory, **create a file `.env`**
+In this file, **add the following**.
 
-You can download Node and npm [here](https://nodejs.org/en/download/). You can also use [yarn](https://yarnpkg.com/lang/en/docs/install/#mac-stable) as an alternative for npm. If you have a Mac, you can easily install it using [Homebrew](https://brew.sh/).
+```bash
+NODE_ENV="development"
+TMDB_API_KEY={YOUR_TMDB_API_KEY}
+```
 
-After download, ensure installation. Restart your terminal, open a window, and then run:
+(If I have sent you this project, you should have received the API Key in the email.)
+
+Then, ensure node, npm, and yarn (optional) are installed.
 
 ```bash
 node -v # Confirm node is installed
@@ -63,9 +69,20 @@ In another terminal window, run the client.
 
 With more time to work on this project, I would flesh out the following features:
 
-- better styles overall, especially on the MovieCard component when the pages loads
-- usage of the URL query parameters when searching for movies, paginating, or selecting filters
-- filtration by genre, year
-- incorporation of image and video assets on the single movie page
-- better-structured (flattened) reducers, especially the movie and search reducers, where data is nested 3 or 4 layers deep
--
+- Server
+  - test endpoints and/or controller functions using Jest
+  - create more endpoints to act as a proxy to the TMDb API -- use the data in the application
+  - cache responses using the [memory-cache](https://www.npmjs.com/package/memory-cache) package => benchmark response times with & without cache
+- Client
+  - improve overall styles
+    - `MovieCard` component on the landing page (add more information to this, making extra API calls if necessary)
+    - mobile-responsiveness -- the page design is terrible on screens smaller than around 800px wide
+  - add rank numbers to the `MovieCard` components on the landing page -- the movies displayed are not in an obvious list and so a user may not understand how the movies are sorted
+  - use URL query parameters when searching for movies, paginating, or selecting filters
+    - this would be simply using the `navigate` function from the `@reach/router` to update a variable in the URL query, then reading the value in the `componentDidUpdate` function of the `MovieResults` component and making the `GET` request via the server for the results that match the query
+    - the above set-up would be similar for pagination, except we'd only have a `page` variable in the URL query if the current page is not `1`.
+  - filter movie results by genre, year
+  - allow the user to switch the language in which they receive the results (the performant storage of this information in Redux is already built, but the changing of languages is not. I realized a bit later that not every movie has every translation offered by TMDb as a whole -- movie `A` could have 25 translations while movie `B` only has 5 -- it's a little more complex to build this out.)
+  - incorporation of image and video assets on the single movie page
+  - better-structured (flattened) reducers, especially the movie and search reducers, where data is nested 3 or 4 layers deep
+  - wrap each `MovieCard` component in a `div` that, when hovered, fetches data on the movie -- this would make the site more crisp, as if the user clicks the card they've hovered over, the data on the movie is likely to have fetched before even rendering the movie details page (thus not showing the `PageLoader` component to the user)

@@ -6,11 +6,8 @@
   "author": "Rahul Rangnekar <rrangnekar96@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "prod:server": "node -r dotenv/config ./server/index.js",
-    "dev:server": "nodemon -r dotenv/config ./server/index.js",
-    "prod:client": "",
-    "dev:client": "parcel client/index.html",
-    "dev": "yarn run dev:server & yarn run dev:client"
+    "start": "node -r dotenv/config ./server/index.js",
+    "dev": "nodemon -r dotenv/config ./server/index.js"
   },
   "dependencies": {
     "axios": "^0.19.0",
