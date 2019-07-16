@@ -26,6 +26,7 @@ TMDB_API_KEY={YOUR_TMDB_API_KEY}
 ```
 
 (If I emailed you this project, you should have received the API Key in the email.)
+The `.env` file should be in the root of your project (alongside the `server` and `client` directories, `README.md`, etc.).
 
 Then, ensure node, npm, and yarn (optional) are installed.
 
@@ -55,14 +56,14 @@ To run locally, assuming you are in the `tmdb-app` directory:
 In one terminal window, run the server.
 
 ```bash
-  yarn start
+  yarn start // or `npm run start`
 ```
 
 In another terminal window, run the client.
 
 ```bash
   cd client
-  yarn start
+  yarn start // or `npm run start`
 ```
 
 ## Future Features
